@@ -56,8 +56,13 @@ class Create extends DepartModel
     }
 
 
-    public function parentRule()
+    public function parentRule($value)
     {
+        list($depart_ids, $children_ids) = HpRabcAdv::getUserRelatedAllDepart(null, $this->external);
+        if (array_diff($value, array_merge($depart_ids,$children_ids))) {
+            return '上级部门超出授权范围';
+        }
+
         // 检查多个部门的从属关系
         foreach ($this->parent_ids as $pid) {
             $children = HpRabcAdv::getDepartAllChildren($pid, $this->external);

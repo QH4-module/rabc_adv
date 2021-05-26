@@ -17,6 +17,8 @@ namespace qh4module\rabc_adv\models\depart;
 
 
 use qh4module\rabc_adv\external\ExtRabcAdv;
+use qh4module\rabc_adv\HpRabcAdv;
+use qh4module\token\TokenFilter;
 use qttx\web\ServiceModel;
 
 /**
@@ -42,20 +44,42 @@ class CascaderData extends ServiceModel
      */
     public function run()
     {
+
+        $user_id = TokenFilter::getPayload('user_id');
+
+        // 存储允许选择的id
+        $enable_depart_ids = [];
+        if ($this->only_own_enable) {
+            list($depart_ids, $children_ids) = HpRabcAdv::getUserRelatedAllDepart($user_id, $this->external);
+            if ($this->only_children_enable) {
+                $enable_depart_ids = $children_ids;
+            } else {
+                $enable_depart_ids = array_merge($depart_ids, $children_ids);
+            }
+            if (empty($enable_depart_ids)) return [];
+        }
+
+
         $tb_depart = $this->external->departTableName();
         $tb_rel = $this->external->departRelationTableName();
 
-        $result_depart = $this->external->getDb()
+        $sql = $this->external->getDb()
             ->select(['id as value', 'name as label'])
-            ->from($tb_depart)
-            ->where('del_time=0')
+            ->from($tb_depart);
+//        if ($this->only_own_enable) {
+//            $sql->whereIn('id', $enable_depart_ids);
+//        }
+        $result_depart = $sql->where('del_time=0')
             ->query();
 
-        $result_relation = $this->external->getDb()
-            ->select(['depart_id','parent_id'])
+        $sql = $this->external->getDb()
+            ->select(['depart_id', 'parent_id'])
             ->from("$tb_rel as t1")
-            ->leftJoin("$tb_depart as t2",'t1.depart_id=t2.id')
-            ->where('t1.del_time=0')
+            ->leftJoin("$tb_depart as t2", 't1.depart_id=t2.id');
+//        if ($this->only_own_enable) {
+//            $sql->whereIn('depart_id', $enable_depart_ids);
+//        }
+        $result_relation = $sql->where('t1.del_time=0')
             ->orderByDESC(['t2.sort'])
             ->query();
 

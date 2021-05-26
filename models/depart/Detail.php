@@ -42,8 +42,8 @@ class Detail extends ServiceModel
     public function run()
     {
         // 所有的字段,根据需要删减
-        $fields = ['`ta`.`id`','`ta`.`name`','`ta`.`create_by`','`ta`.`create_time`',
-            '`ta`.`desc`','`ta`.`del_time`'
+        $fields = ['`ta`.`id`','`ta`.`name`','`ta`.`create_by`','`ta`.`create_time`', '`ta`.`desc`',
+            'tb.nick_name as create_by_name',
         ];
 
         // 构建基础查询

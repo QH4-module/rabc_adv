@@ -120,6 +120,7 @@ class HpRabcAdv
             ->from($external->departRelationTableName())
             ->where('del_time=0')
             ->query();
+
         if (empty($result)) return [];
 
         return self::_get_depart_children($result, $depart_id);
@@ -127,17 +128,23 @@ class HpRabcAdv
 
     protected static function _get_depart_children($result, $parent)
     {
-        static $ary = [];
+        $ary = [];
         foreach ($result as $item) {
             if (is_array($parent)) {
                 if (in_array($item['parent_id'], $parent)) {
                     $ary[] = $item['depart_id'];
-                    self::_get_depart_children($result, $item['depart_id']);
+                    $tmp = self::_get_depart_children($result, $item['depart_id']);
+                    if ($tmp) {
+                        $ary = array_merge($ary, $tmp);
+                    }
                 }
             } else {
                 if ($item['parent_id'] == $parent) {
                     $ary[] = $item['depart_id'];
-                    self::_get_depart_children($result, $item['depart_id']);
+                    $tmp = self::_get_depart_children($result, $item['depart_id']);
+                    if ($tmp) {
+                        $ary = array_merge($ary, $tmp);
+                    }
                 }
             }
         }

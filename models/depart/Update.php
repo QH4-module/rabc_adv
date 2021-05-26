@@ -60,8 +60,14 @@ class Update extends DepartModel
     }
 
 
-    public function parentRule()
+    public function parentRule($value)
     {
+
+        list($depart_ids, $children_ids) = HpRabcAdv::getUserRelatedAllDepart(null, $this->external);
+        if (array_diff($value, array_merge($depart_ids,$children_ids))) {
+            return '上级部门超出授权范围';
+        }
+
         $self_child = HpRabcAdv::getDepartAllChildren($this->id, $this->external);
         $self_child[] = $this->id;
 

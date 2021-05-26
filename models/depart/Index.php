@@ -9,6 +9,9 @@
 namespace qh4module\rabc_adv\models\depart;
 
 
+use qh4module\rabc_adv\HpRabcAdv;
+use qh4module\token\TokenFilter;
+
 /**
  * Class Index
  * 分页获取tbl_bk_depart表的数据
@@ -65,11 +68,22 @@ class Index extends DepartModel
         $tb_info = $this->external->userInfoTableName();
         $tb_depart = $this->external->departTableName();
         $tb_rel = $this->external->departRelationTableName();
+        $user_id = TokenFilter::getPayload('user_id');
 
         $db = $this->external->getDb();
         $sql = $db->select($fields)
             ->from("$tb_depart as ta")
             ->leftJoin("$tb_info as tb", 'ta.create_by=tb.user_id');
+
+        // 非管理员只显示自己相关部门
+        if (!HpRabcAdv::is_administrator($user_id, $this->external)) {
+            list($depart_ids, $child_ids) = HpRabcAdv::getUserRelatedAllDepart($user_id, $this->external);
+            $depart_ids = array_merge($depart_ids, $child_ids);
+            if (empty($depart_ids)) {
+                return array('total' => 0, 'list' => [], 'page' => 1, 'limit' => 10);
+            }
+            $sql->whereIn('id', $depart_ids);
+        }
 
         // 追加筛选条件
         if ($this->id) {

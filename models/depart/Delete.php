@@ -72,8 +72,12 @@ class Delete extends ServiceModel
                 ->where('del_time=0')
                 ->query();
 
-            // 删除用户管理
-
+            // 删除用户关联
+            $db->update($this->external->relUserDepartTableName())
+                ->col('del-time', $t)
+                ->whereIn('depart_id', $this->ids)
+                ->where('del_time=0')
+                ->query();
 
             $db->commitTrans();
 
