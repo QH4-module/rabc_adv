@@ -47,9 +47,11 @@ class CascaderData extends ServiceModel
 
         $user_id = TokenFilter::getPayload('user_id');
 
+        $is_admin = HpRabcAdv::is_administrator($user_id, $this->external);
+
         // 存储允许选择的id
         $enable_depart_ids = [];
-        if ($this->only_own_enable) {
+        if (!$is_admin && $this->only_own_enable) {
             list($depart_ids, $children_ids) = HpRabcAdv::getUserRelatedAllDepart($user_id, $this->external);
             if ($this->only_children_enable) {
                 $enable_depart_ids = $children_ids;
@@ -66,9 +68,9 @@ class CascaderData extends ServiceModel
         $sql = $this->external->getDb()
             ->select(['id as value', 'name as label'])
             ->from($tb_depart);
-//        if ($this->only_own_enable) {
-//            $sql->whereIn('id', $enable_depart_ids);
-//        }
+        if (!$is_admin && $this->only_own_enable) {
+            $sql->whereIn('id', $enable_depart_ids);
+        }
         $result_depart = $sql->where('del_time=0')
             ->query();
 
@@ -76,9 +78,9 @@ class CascaderData extends ServiceModel
             ->select(['depart_id', 'parent_id'])
             ->from("$tb_rel as t1")
             ->leftJoin("$tb_depart as t2", 't1.depart_id=t2.id');
-//        if ($this->only_own_enable) {
-//            $sql->whereIn('depart_id', $enable_depart_ids);
-//        }
+        if (!$is_admin && $this->only_own_enable) {
+            $sql->whereIn('depart_id', $enable_depart_ids);
+        }
         $result_relation = $sql->where('t1.del_time=0')
             ->orderByDESC(['t2.sort'])
             ->query();
