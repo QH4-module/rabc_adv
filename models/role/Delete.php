@@ -16,8 +16,8 @@
 namespace qh4module\rabc_adv\models\role;
 
 
-use qh4module\rabc\models\RabcRedis;
 use qh4module\rabc_adv\HpRabcAdv;
+use qh4module\rabc_adv\models\RabcRedis;
 
 /**
  * Class Delete

@@ -25,7 +25,7 @@ class ExtRabcAdv extends External
      */
     public function userTableName()
     {
-        return '{{bk_user}}';
+        return '{{%bk_user}}';
     }
 
     /**
@@ -33,7 +33,7 @@ class ExtRabcAdv extends External
      */
     public function userInfoTableName()
     {
-        return '{{bk_user_info}}';
+        return '{{%bk_user_info}}';
     }
 
     /**

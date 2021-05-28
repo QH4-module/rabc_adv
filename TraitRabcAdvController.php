@@ -42,6 +42,7 @@ use qh4module\rabc_adv\models\user\Create as UserCreate;
 use qh4module\rabc_adv\models\user\Delete as UserDelete;
 use qh4module\rabc_adv\models\user\Detail as UserDetail;
 use qh4module\rabc_adv\models\user\Index as UserIndex;
+use qh4module\rabc_adv\models\user\OptionData as UserOptionData;
 use qh4module\rabc_adv\models\user\Update as UserUpdate;
 
 /**
@@ -95,6 +96,19 @@ trait TraitRabcAdvController
     public function actionPrivilegeKeys()
     {
         $model = new PrivilegeKeys([
+            'external' => $this->ext_rabc_adv(),
+        ]);
+
+        return $this->runModel($model);
+    }
+
+    /**
+     * 获取用户的option数据
+     * @return array
+     */
+    public function actionUserOptionData()
+    {
+        $model = new UserOptionData([
             'external' => $this->ext_rabc_adv(),
         ]);
 
@@ -337,65 +351,65 @@ trait TraitRabcAdvController
         return $this->runModel($model);
     }
 
-/**
- * 获取部门列表,返回数据树
- * @return array
- */
-public function actionDepartIndex()
-{
-    $model = new departIndex([
-        'external' => $this->ext_rabc_adv(),
-    ]);
+    /**
+     * 获取部门列表,返回数据树
+     * @return array
+     */
+    public function actionDepartIndex()
+    {
+        $model = new departIndex([
+            'external' => $this->ext_rabc_adv(),
+        ]);
 
-    return $this->runModel($model);
-}
+        return $this->runModel($model);
+    }
 
-/**
- * 新增部门
- */
-public function actionDepartCreate()
-{
-    $model = new departCreate([
-        'external' => $this->ext_rabc_adv(),
-    ]);
+    /**
+     * 新增部门
+     */
+    public function actionDepartCreate()
+    {
+        $model = new departCreate([
+            'external' => $this->ext_rabc_adv(),
+        ]);
 
-    return $this->runModel($model);
-}
+        return $this->runModel($model);
+    }
 
-/**
- * 更新部门
- */
-public function actionDepartUpdate()
-{
-    $model = new departUpdate([
-        'external' => $this->ext_rabc_adv(),
-    ]);
+    /**
+     * 更新部门
+     */
+    public function actionDepartUpdate()
+    {
+        $model = new departUpdate([
+            'external' => $this->ext_rabc_adv(),
+        ]);
 
-    return $this->runModel($model);
-}
+        return $this->runModel($model);
+    }
 
-/**
- * 批量删除部门
- */
-public function actionDepartDelete()
-{
-    $model = new departDelete([
-        'external' => $this->ext_rabc_adv(),
-    ]);
+    /**
+     * 批量删除部门
+     */
+    public function actionDepartDelete()
+    {
+        $model = new departDelete([
+            'external' => $this->ext_rabc_adv(),
+        ]);
 
-    return $this->runModel($model);
-}
+        return $this->runModel($model);
+    }
 
-/**
- * 获取部门详情
- * @return array
- */
-public function actionDepartDetail()
-{
-    $model = new departDetail([
-        'external' => $this->ext_rabc_adv(),
-    ]);
+    /**
+     * 获取部门详情
+     * @return array
+     */
+    public function actionDepartDetail()
+    {
+        $model = new departDetail([
+            'external' => $this->ext_rabc_adv(),
+        ]);
 
-    return $this->runModel($model);
-}
+        return $this->runModel($model);
+    }
 }
